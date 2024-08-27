@@ -21,25 +21,55 @@ struct Hex {
 
 
 //En proceso función para llenar con las coordenadas de cada pieza correspondiente.
-void fillHexBoard(std::vector<Hex>& piezas, int radio) {
+void fillHexBoard(std::vector<Hex>& board) {
     
-    int index = 0;
-    
-    // Primer hexágono en el centro
-    piezas[index++] = {0, 0, 0, false};
-
-    // Llenar los hexágonos en anillos alrededor del centro
-    for (int r = 1; r <= radio; ++r) {
-        int q = -r;
-        int s = 0;
-        int temp_r = r;
+    for (int index = 0; index < board.size(); index++) {
+        board[index].q = _cq[index];
+        board[index].r = _cr[index];
+        board[index].s = _cs[index];   
     }
+}
+
+void printTableBug(int w){
+    
+    //char none = ;
+    int it = 2*w -1;
+    for (int i = 0; i < it; i++)
+    {
+        for(int j = 0; j < it; j++)
+        {
+            if(i == 0 || i == it-1){
+                if(j== 0 || j == 1){
+                    std::cout << " ";
+                }
+                else{
+                    std::cout << "* ";
+                }
+            }
+            if(i == 1 || i == it-2){
+                if(j== 0){
+                    std::cout << " ";
+                }
+                else{
+                    std::cout << "* ";
+                }
+            }
+            if(i == 2){
+                std::cout << "* ";
+            }
+            
+        }
+        std::cout << "\n";
+    }
+    
+    //std::cout << it << "\n";
+
 }
 
 int main() {
     int width = 3;
     
-    std::cout<<"Tamaño del tablero de 3x3x3x3x3   -   Bug Gameplay\n";
+    std::cout<<"Tamaño del tablero de 3x3x3x3x3 - Bug\n";
     
     int size = 3 * width * (width - 1)+1;
 
@@ -48,18 +78,17 @@ int main() {
     std::cout << board.size() << + "\n";
     // Inicializa el tablero
 
-    fillHexBoard(board, width);
+    fillHexBoard(board);
 
-    int i = 0;
-    /*/ Imprimir las coordenadas de las piezas
-    for (i = 0; i < size; ++i) {
+    // Imprimir las coordenadas de las piezas
+    for (int i = 0; i < size; i++) {
         std::cout << "Pieza " << i << ": (" 
                   << board[i].q << ", " 
                   << board[i].r << ", " 
                   << board[i].s << ")\n";
-    }*/
+    }
 
-    std::cout << i << "\n";
+    printTableBug(width);
 
     return 0;
 }
