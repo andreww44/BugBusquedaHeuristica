@@ -2,6 +2,11 @@
 #include <string>
 #include <vector>
 
+//Coordenadas para cada punto del tablero
+int _cq[19] = {0,1,2,-1,0,1,2,-2,-1,0,1,2,-2,-1,0,1,-2,-1,0};
+int _cr[19] = {-2,-2,-2,-1,-1,-1,-1,0,0,0,0,0,1,1,1,1,2,2,2}; 
+int _cs[19] = {2,1,0,2,1,0,-1,2,1,0,-1,-2,1,0,-1,-2,0,-1,-2}; 
+
 // Define el tamaño del tablero
 //Formula para estimar el tamaño del tablero. 3n(n−1)+1
 //const int WIDTH = 3; // Ancho del tablero
