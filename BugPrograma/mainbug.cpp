@@ -6,6 +6,7 @@
 //Coordenadas para cada punto del tablero
 unsigned int w_table = 0x0000000;
 unsigned int b_table = 0x0000000;
+unsigned int table = 0x0;
 
 //Funcion que imprime ambos tableros
 void printBoard(){
@@ -16,11 +17,11 @@ void printBoard(){
                 if(j == 0 || j == 1){
                     std::cout << " ";
                 }
-                else if(w_table& (1 << j+14))
+                else if(w_table& (1 << j-2))
                 {
                     std::cout << "W ";
                 }
-                else if(b_table&(1<<j+14)){
+                else if(b_table&(1<<j-2)){
                     std::cout << "B ";
                 }
                 else{
@@ -31,11 +32,11 @@ void printBoard(){
                 if(j == 0){
                     std::cout << " ";
                 }
-                else if(w_table& (1 << j+11))
+                else if(w_table& (1 << j+2))
                 {
                     std::cout << "W ";
                 }
-                else if(b_table&(1<<j+11)){
+                else if(b_table&(1<<j+2)){
                     std::cout << "B ";
                 }
                 else{
@@ -58,11 +59,11 @@ void printBoard(){
                 if(j == 0){
                     std::cout << " ";
                 }
-                else if(w_table& (1 << j+2))
+                else if(w_table& (1 << j+11))
                 {
                     std::cout << "W ";
                 }
-                else if(b_table& (1 << j+2)){
+                else if(b_table& (1 << j+11)){
                     std::cout << "B ";
                 }
                 else{
@@ -73,11 +74,11 @@ void printBoard(){
                 if(j == 0 || j == 1){
                     std::cout << " ";
                 }
-                else if(w_table& (1 << j-2))
+                else if(w_table& (1 << j+14))
                 {
                     std::cout << "W ";
                 }
-                else if(b_table& (1 << j-2))
+                else if(b_table& (1 << j+14))
                 {
                     std::cout << "B ";
                 }
@@ -92,13 +93,8 @@ void printBoard(){
 
 int main()
 {
-    unsigned int hexValue = 0x02;
     //Valor Maximo para el enmascaramiento
     unsigned int hexMax = 0x0007FFFF;
-    //Tablero de las blancas
-    unsigned int hexWhite = 0x0;
-    //Tablero de las negras
-    unsigned int hexBlack = 0x0;
     /*
     std::cout << "Valor Hexadecimal = " << std::hex << table << std::endl;
     std::bitset<32> bits(table);
@@ -111,31 +107,44 @@ int main()
     //Ciclo de juego
     
     int a = -1;
-
+    int jugador = 0;
     unsigned int up = 0x0;
+
+    std::cout << "Bienvenido a Bug" << std::endl;
     while (a != 0)
     {
-        std::cout << "Bienvenido a Bug" << std::endl;
+        if(jugador == 0){
+            std::cout << "JUEGA NEGRO" << std::endl;
+        }
+        else{
+            std::cout << "JUEGA BLANCA" << std::endl;
+        }
         std::cout << "Ingrese en que posicion del 1 al 19 quiere ingresar a la ficha" << std::endl;
         std::cout << "Ingrese 0 para salir" << std::endl;
         std::cin >> a;
 
         unsigned int newPiece = 0x0000001;
-
         newPiece = 1 << a-1;
 
-        std::bitset<32> bits(newPiece);
-        std::cout << "Valor en bits = " << bits << std::endl;
-        
-        if(a!=0){
-            up = newPiece;
-            w_table = w_table | up;
+        bool freepos = !(table& (1 << a-1));
+            //w_table& (1 << j-2)
+        if(a!=0 && freepos){
+            if(jugador == 0){
+                b_table = b_table | newPiece;
+                jugador = 1;
+            }
+            else{
+                w_table = w_table | newPiece;
+                jugador = 0;
+            }
+            table = table | newPiece;
             printBoard();
+        }
+        else{
+            std::cout << "INGRESE POSICION VALIDA" << std::endl;
         }
     }
     
-    w_table = up;
-    printBoard();
-    
+    std::cout << "Saliendo" << std::endl;
     return 0;
 }
