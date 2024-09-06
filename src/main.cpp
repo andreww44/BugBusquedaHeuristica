@@ -2,11 +2,48 @@
 #include <string>
 #include <vector>
 #include <bitset>
+#include <cstdint>
 
 //Coordenadas para cada punto del tablero
 unsigned int w_table = 0x0000000;
 unsigned int b_table = 0x0000000;
 unsigned int table = 0x0;
+
+class Board {
+private:
+    //Miembros de datos privados (no accesibles fuera de la clase)
+
+    uint64_t bBoard;
+    uint64_t wBoard;
+
+public:
+    // Constructor de la clase
+    Board(uint64_t _bBoard, uint64_t _wBoard){
+        bBoard = _bBoard;
+        wBoard = _wBoard;
+    }
+
+    // Método para Insertar una nueva pieza al tablero
+    void insertPiece(){
+
+    }
+
+    //Imprime el tablero 
+    void printBoard(){
+        std::cout << "Imprimir";
+    }
+    
+    //Retorna si la posicion del tablero es esta libre
+    bool validMove(){
+        // = tablero(numero a revisar << cuantas posiciones)
+        //bool freepos = !(table& (1 << a-1));
+        
+        return true;
+    }
+
+
+
+};
 
 //Funcion que imprime ambos tableros
 void printBoard(){
@@ -93,19 +130,9 @@ void printBoard(){
 
 int main()
 {
-    //Valor Maximo para el enmascaramiento
-    unsigned int hexMax = 0x0007FFFF;
+   
+
     /*
-    std::cout << "Valor Hexadecimal = " << std::hex << table << std::endl;
-    std::bitset<32> bits(table);
-    std::cout << "Valor en bits = " << bits << std::endl;
-    //Tablero 
-    std::cout << "Valor Hexadecimal Maximo = " << std::hex <<hexMax << std::endl;
-    std::bitset<32> blackbits(hexMax);
-    std::cout << "Valor en Bits Maximo = " << blackbits << std::endl;
-*/
-    //Ciclo de juego
-    
     int a = -1;
     int jugador = 0;
     unsigned int up = 0x0;
@@ -145,6 +172,6 @@ int main()
         }
     }
     
-    std::cout << "Saliendo" << std::endl;
+    std::cout << "Saliendo" << std::endl;*/
     return 0;
 }
