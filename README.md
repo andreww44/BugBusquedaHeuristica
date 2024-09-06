@@ -1,1 +1,1 @@
-# BugBusquedaHeuristica
+# Troll Game Heuristica
