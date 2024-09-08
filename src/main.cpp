@@ -5,62 +5,91 @@
 #include <cstdint>
 
 typedef uint64_t U64;
+enum MARK{White, Black};
 
 class Board {
 private:
     //Miembros de datos privados (no accesibles fuera de la clase)
 
-    uint64_t bBoard;
-    uint64_t wBoard;
-
-    void printBits(uint64_t value) const {
-        // Utiliza std::bitset para convertir el valor en una cadena de bits
-        std::bitset<64> bits(value);
-
-        // Imprime la cadena de bits en grupos de 8 bits para mejor legibilidad
-        for (int i = 0; i < 64; i += 8) {
-            std::cout << bits.to_string().substr(i, 8) << std::endl;
-        }
-        std::cout << std::endl;
-    }
-
-public:
-    // Constructor de la clase
-    Board(uint64_t _wBoard = 0, uint64_t _bBoard = 0) : wBoard(_wBoard), bBoard(_bBoard){
-
-    }
-
-    // Método para Insertar una nueva pieza al tablero
-    void insertPiece(){
-        //Colocar las piezas van de izquierda a derecha
-    }
-
-    //Imprime el tablero 
-    void printBoard(){
-        printBits(wBoard);
-    }
-    
+    U64 board[2];
+    U64 maskBoard[2];
+    U64 oneMask;
+    MARK turn;
+   
     //Retorna si la posicion del tablero es esta libre
-    bool validMove(){
-        // = tablero(numero a revisar << cuantas posiciones)
-        //bool freepos = !(table& (1 << a-1));
-        
+    bool isLegalMove(int position){
+        //std::cout << "Wb" << std::bitset<64>(wBoard) << std::endl;
+        if(position < 0 || position > 64)
+            return false;
+        if (turn == White && ( (board[White] |(board[Black] & maskBoard[Black])) & (oneMask << position) ))          
+            return false;
+        if (turn == Black && ( (board[Black] |(board[White] & maskBoard[White])) & (oneMask << position) ))
+            return false;
         return true;
     }
 
+public:
+    //Destructor Prototype
+    ~Board() = default;
+
+    // Constructor de la clase
+    Board(){
+        board[White] = 0x8181818181818181ULL;
+        board[Black] = 0xff000000000000ffULL;
+        maskBoard[White] = ~board[White];
+        maskBoard[Black] = ~board[Black];
+        turn = White;
+        oneMask = 1ULL;
+    }
+
+    // Metodo que permite el hacer un movimiento.
+    bool makeMove(int position){
+        if(isLegalMove(position)){
+            board[turn] |= (oneMask << position);
+            turn = 1-turn == 0 ? White : Black;
+            return true;
+        }
+        return false;
+    }
+
+    //Imprime el tablero 
+    void print(){
+
+        U64 wTable = board[White] & maskBoard[White];
+        U64 bTable = board[Black] & maskBoard[Black];
+
+        //U64 table = wTable | bTable; 
+        std::cout << "Tablero Troll" << std::endl;
+        for (int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++){
+                if(wTable&(oneMask << (j+ (i*8)))){
+                    std::cout<<"W ";
+                }
+                else if(bTable&(oneMask << (j+ (i*8)))){
+                    std::cout<<"B ";
+                }
+                else{
+                    std::cout<< "* "; 
+                }
+            }
+            std::cout<< "\n"; 
+        }
+        std::cout << std::endl;
+        
+    }
 };
 
 //Funcion que imprime ambos tableros
 int main()
 {
+    Board tablero;
     
-    //FF00000000000000FF
-    U64 whiteFile = 0xff000000000000ffULL; //Movimientos 
-    U64 blackFile = 0x8181818181818181ULL;
-   
-    Board tablero(whiteFile, blackFile);
-    
-    tablero.printBoard();
+    tablero.makeMove(2);
+    tablero.makeMove(24);
+    tablero.makeMove(25);
+    tablero.makeMove(1);
+
+    tablero.print();
    
     return 0;
 }
