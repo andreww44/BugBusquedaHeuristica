@@ -51,5 +51,6 @@
         "xutility": "cpp",
         "vector": "cpp",
         "bitset": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
