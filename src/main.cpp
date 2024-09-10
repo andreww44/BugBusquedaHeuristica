@@ -47,12 +47,16 @@ public:
 
     // Metodo que permite el hacer un movimiento.
     bool makeMove(int position){
-        if(isLegalMove(position)){
+        if (position < 0 || position >= BOARD_SIZE) {
+    std::cerr << "Error: Position fuera de rango." << std::endl;
+    return false;
+    }
+        else if(isLegalMove(position)){
             board[turn] |= (oneMask << position);
-            turn = 1-turn == 0 ? White : Black;
+            turn = (turn == White) ? Black : White;
             return true;
         }
-        turn = 1-turn == 0 ? White : Black;
+        turn = (turn == White) ? Black : White;
         return false;
     }
 
