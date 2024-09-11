@@ -17,7 +17,6 @@ class Game
     public:
         Game();
         ~Game();
-        void restartBoard();
         void loopGame();
         void exitGame();
         void enterGame();

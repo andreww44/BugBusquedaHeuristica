@@ -19,7 +19,11 @@ void Game::newBoard(){
 
 void Game::loopGame(){
     
-    bool exit = false;
+    int exit = 1;
+    do
+    {
+        system("clear");
+    
     
         setPlayers();
         int flag = 1;
@@ -38,15 +42,25 @@ void Game::loopGame(){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     std::cin >> move;
                 }
+                system("clear");
                 if(move != 0){
                     board->makeMove(move);
-                    if(!board->makeMove(move)){
-                        std::cout << "Ingrese un valor válido" << std::endl;
-                    }
                 }
+                if(board->hasWhiteWon()){
+                    std::cout<< "Ha ganado el jugador de las blancas" << std::endl;
+                    flag = 0;
+                }
+                else if(board->hasBlackWon()){
+                    std::cout<< "Ha ganado jugador de las negras" << std::endl;
+                    flag = 0;
+                }
+                else{
+                    std::cout<<"Pensando"<< std::endl;
+                }
+                std::this_thread::sleep_for(std::chrono::seconds(1));
                 system("clear");
                 board->print();
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                //std::this_thread::sleep_for(std::chrono::seconds(1));
                 break;
             case PVE:
                 //std::
@@ -59,6 +73,25 @@ void Game::loopGame(){
                 break;
             }
         }
+        std::cout<<"Desea salir?" << std::endl;
+        std::cout<<"(1) Si" << std::endl;
+        std::cout<<"(2) NO" << std::endl;
+        std::cin >> exit;
+
+        
+        
+        if(exit == 1){
+            std::cout<< "Saliendo" << std::endl;
+            exit = 0;
+        }
+        else if(exit == 2){
+            std::cout << "Volviendo a jugar" << std::endl;
+            newBoard();
+            system("clear");
+        }
+        
+    } while (exit != 0);
+        
 }
 
 void Game::setPlayers(){
@@ -114,6 +147,7 @@ void Game::enterGame(){
     std::cout << "     ⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃" << std::endl;
     std::cout << "      ⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁" << std::endl;
     std::cout << "        ⠉⠛⠻⠿⠿⠿⠿⠛⠉" << std::endl;
+    
 }
 
 void Game::exitGame(){
