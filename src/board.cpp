@@ -36,7 +36,7 @@ bool Board::makeMove(int position){
         turn = (turn == White) ? Black : White;
         return true;
     }
-    turn = (turn == White) ? Black : White; //Es por mientras se configura el gameloop como tal
+    //turn = (turn == White) ? Black : White; //Es por mientras se configura el gameloop como tal
     return false;
 }
 
@@ -136,4 +136,8 @@ bool Board::hasBlackWon(){
         }
     }
     return false; 
+}
+
+MARK Board::getMark(){
+    return turn;
 }

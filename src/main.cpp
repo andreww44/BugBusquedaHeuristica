@@ -3,12 +3,17 @@
 #include <vector>
 #include <bitset>
 
-#include "board.hpp"
+//#include "board.hpp"
+#include "game.hpp"
 
 //Funcion que imprime ambos tableros
 int main()
 {
-    Board tablero;
+    Game _game;;
+    _game.enterGame();
+    _game.loopGame();
+    _game.exitGame();
+    /*Board tablero;
     
     tablero.makeMove(2); //1
     tablero.makeMove(8);
@@ -44,5 +49,6 @@ int main()
     } else {
         std::cout << "Nadie ha ganado" << std::endl;
     }
+    */
     return 0;
 }

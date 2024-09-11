@@ -3,4 +3,4 @@ project(troll)
 
 set(CMAKE_CXX_STANDAR 20)
 
-add_executable(troll src/main.cpp src/board.hpp src/board.cpp)
+add_executable(troll src/main.cpp src/board.hpp src/board.cpp src/player.hpp src/player.cpp src/game.hpp src/game.cpp)

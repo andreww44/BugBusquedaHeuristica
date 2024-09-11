@@ -27,6 +27,7 @@ class Board
         void print(); // Imprime el tablero
         bool hasWhiteWon(); //Verifica si Blanco ha ganado
         bool hasBlackWon(); //Verifica si Negro ha ganado
+        MARK getMark();
 };
 
 #endif //BOARD_HPP
