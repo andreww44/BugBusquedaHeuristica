@@ -21,6 +21,7 @@ class Game
         void exitGame();
         void enterGame();
         void newBoard();
+        bool hasOneWin(); 
         void setGameMode(GameMode gameMode);
 };
 

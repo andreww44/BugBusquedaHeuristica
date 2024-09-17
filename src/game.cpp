@@ -23,13 +23,10 @@ void Game::loopGame(){
     do
     {
         system("clear");
-    
-    
         setPlayers();
-        int flag = 1;
-        while (flag)
+        bool hasonewin = false;
+        while (!hasonewin)
         {
-            //flag = 0;
             switch (gameMode)
             {
             case PVP:
@@ -41,33 +38,21 @@ void Game::loopGame(){
                 if(board->getMark() == Black){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     std::cin >> move;
-                }
-                system("clear");
-                if(move != 0){
-                    board->makeMove(move);
-                }
-                if(board->hasWhiteWon()){
-                    std::cout<< "Ha ganado el jugador de las blancas" << std::endl;
-                    flag = 0;
-                }
-                else if(board->hasBlackWon()){
-                    std::cout<< "Ha ganado jugador de las negras" << std::endl;
-                    flag = 0;
-                }
-                else{
-                    std::cout<<"Pensando"<< std::endl;
-                }
+                }   
+                board->makeMove(move);
+                std::cout<<"Pensando"<< std::endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
+                
+                //Pregunta Condicion de victoria
                 system("clear");
+                hasonewin = hasOneWin();
                 board->print();
-                //std::this_thread::sleep_for(std::chrono::seconds(1));
                 break;
             case PVE:
-                //std::
-                flag = 0;
+                hasonewin = true;
                 break;
             case EVE:
-                flag = 0;
+                hasonewin = true;
                 break;
             default:
                 break;
@@ -77,9 +62,7 @@ void Game::loopGame(){
         std::cout<<"(1) Si" << std::endl;
         std::cout<<"(2) NO" << std::endl;
         std::cin >> exit;
-
-        
-        
+                
         if(exit == 1){
             std::cout<< "Saliendo" << std::endl;
             exit = 0;
@@ -94,10 +77,23 @@ void Game::loopGame(){
         
 }
 
+bool Game::hasOneWin(){
+    if(board->hasWhiteWon()){
+        std::cout<< "Ha ganado el jugador de las blancas" << std::endl;
+        return true;
+    }
+    else if(board->hasBlackWon()){
+        std::cout<< "Ha ganado jugador de las negras" << std::endl;
+        return true;
+    }
+    std::cout<< "Nadie ha Ganado" << std::endl;
+    return false;
+}
+
 void Game::setPlayers(){
     
     int select = -1;
-    while (select != (1 || 2))
+    while (select != (1 || 2 || 3))
     {
         std::this_thread::sleep_for(std::chrono::seconds(2));
         system("clear");
@@ -130,31 +126,21 @@ void Game::setPlayers(){
     }
 }
 
+//Intro
 void Game::enterGame(){
-    std::cout << "Entrando a Troll"<< std::endl;
-    std::cout << " ⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀"<< std::endl;
-    std::cout << " ⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀ "<< std::endl;
-    std::cout << "    ⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆" << std::endl;
-    std::cout << "       ⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀"<< std::endl;
-    std::cout << "    ⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆" <<std::endl;
-    std::cout << "  ⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿ " << std::endl;
-    std::cout << " ⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉"<<std::endl;
-    std::cout << " ⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇" << std::endl;
-    std::cout << " ⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇" << std::endl;
-    std::cout << "       ⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇" << std::endl;
-    std::cout << "        ⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿ "<<std::endl;
-    std::cout << "     ⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇" << std::endl;
-    std::cout << "     ⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃" << std::endl;
-    std::cout << "      ⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁" << std::endl;
-    std::cout << "        ⠉⠛⠻⠿⠿⠿⠿⠛⠉" << std::endl;
+    std::cout << " ⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿⣿ ⣿⣿    ⣿⣿"<< std::endl;
+    std::cout << "   ⣿⣿   ⣿⣿  ⣿⣿ ⣿⣿  ⣿⣿ ⣿⣿    ⣿⣿"<< std::endl;
+    std::cout << "   ⣿⣿   ⣿⣿⣿⣿⣿  ⣿⣿  ⣿⣿ ⣿⣿    ⣿⣿ "<< std::endl;
+    std::cout << "   ⣿⣿   ⣿⣿   ⣿ ⣿⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿ ⣿⣿⣿⣿⣿"<< std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
     
 }
 
+//Salida
 void Game::exitGame(){
     std::cout << "Saliendo de Troll"<< std::endl;
-
 }
-
+//Setea el modo de juego
 void Game::setGameMode(GameMode gM){
     gameMode = gM;
 }
