@@ -27,16 +27,45 @@ bool Board::isLegalMove(int position){
     return true;
 }
 
+bool Board::isEating(int position){
+    //turn
+    //Comer solo a la derecha
+    int y = position/N;
+    int x = position%N;
+
+    std::cout<< "x = " << x << "y = " << y << std::endl;  
+
+    //Seis direcciones
+    //x = 3 y = 3 
+    // x = 8 -3 = 5
+    for(int i = 0; i < N-x; i++){
+
+        if(board[turn] & maskBoard[turn] & oneMask << position + i ){
+            std::cout << "Existe" << std::endl;
+            break;
+        }
+        else
+        {
+            std::cout << "No Hay" << std::endl;
+        }
+    }
+    
+
+    return false;
+}
+
 bool Board::makeMove(int position){
     if (position < 0 || position >= BOARD_SIZE) {
         return false;
     }
     else if(isLegalMove(position)){
         board[turn] |= (oneMask << position);
+        if(isEating(position)){
+            std::cout<< "Comiste "<<std::endl ;
+        }
         turn = (turn == White) ? Black : White;
         return true;
     }
-    //turn = (turn == White) ? Black : White; //Es por mientras se configura el gameloop como tal
     return false;
 }
 
@@ -50,13 +79,13 @@ bool Board::existsWayDfs(MARK color, U64 map, U64& visit, int x, int y, int pf){
         return false;
     }
 
-    int posicion = x*N + y;
+    int position = x*N + y;
 
-    if((visit & (oneMask << posicion )) || !(map &(oneMask << posicion))){
+    if((visit & (oneMask << position )) || !(map &(oneMask << position))){
         return false;
     }
 
-    visit |= (oneMask << posicion);
+    visit |= (oneMask << position);
 
     if(color == White){
         if(x == pf){

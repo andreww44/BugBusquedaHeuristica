@@ -17,6 +17,7 @@ class Board
     MARK turn;
 
     bool isLegalMove(int position); //Verificar si la pos es legal.
+    bool isEating(int position);
     bool isValidInLimits(int x, int y); // Verificar si el numero ingresado esta dentro de los limites
     bool existsWayDfs(MARK color, U64 map, U64& visit, int x, int y, int pf);
 
@@ -27,7 +28,7 @@ class Board
         void print(); // Imprime el tablero
         bool hasWhiteWon(); //Verifica si Blanco ha ganado
         bool hasBlackWon(); //Verifica si Negro ha ganado
-        MARK getMark();
+        MARK getMark();//Retorna el turno
 };
 
 #endif //BOARD_HPP
