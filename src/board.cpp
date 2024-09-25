@@ -1,7 +1,8 @@
 #include <iostream>
 #include <cstdint>
-
 #include "board.hpp"
+
+
 
 Board::Board(){
 
@@ -28,30 +29,43 @@ bool Board::isLegalMove(int position){
 }
 
 bool Board::isEating(int position){
-    //turn
-    //Comer solo a la derecha
-    int y = position/N;
-    int x = position%N;
+    // Llama a la función para todas las direcciones
+    for (int dir = 0; dir < 8; dir++) {
+        eat(position, dir);
+    }
+    return true;
+}
 
-    std::cout<< "x = " << x << "y = " << y << std::endl;  
+bool Board::eat(int position, int direction){
+    int y = position / N;
+    int x = position % N;
+    int dy = DIRECTIONS[direction][0];
+    int dx = DIRECTIONS[direction][1];
 
-    //Seis direcciones
-    //x = 3 y = 3 
-    // x = 8 -3 = 5
-    for(int i = 0; i < N-x; i++){
+    // Nueva posición
+    int newY = y + dy;
+    int newX = x + dx;
 
-        if(board[turn] & maskBoard[turn] & oneMask << position + i ){
-            std::cout << "Existe" << std::endl;
-            break;
+    // Comprobar límites
+    if(newY < 0 || newY >= N || newX < 0 || newX >= N){
+        return false; // Fuera de límites
+    }
+
+    int newPosition = newY * N + newX; // Calcular nueva posición en el tablero
+
+    MARK notTurn = (turn == White) ? Black : White;
+    
+    if(!((board[turn] & maskBoard[turn]) & (oneMask << newPosition))) {
+        if(!((board[notTurn] & maskBoard[notTurn]) & (oneMask << newPosition))) {
+            return false;
         }
-        else
-        {
-            std::cout << "No Hay" << std::endl;
+        if(!eat(newPosition, direction)) {
+            return false; 
         }
     }
-    
-
-    return false;
+    board[notTurn] &= ~(oneMask << newPosition); 
+    board[turn] |= (oneMask << newPosition);     
+    return true;
 }
 
 bool Board::makeMove(int position){
@@ -60,8 +74,8 @@ bool Board::makeMove(int position){
     }
     else if(isLegalMove(position)){
         board[turn] |= (oneMask << position);
-        if(isEating(position)){
-            std::cout<< "Comiste "<<std::endl ;
+        if( isEating(position)){
+            std::cout<<"Revise"<<std::endl;
         }
         turn = (turn == White) ? Black : White;
         return true;
@@ -125,7 +139,6 @@ void Board::print(){
     U64 wTable = board[White] & maskBoard[White];
     U64 bTable = board[Black] & maskBoard[Black];
 
-
     //U64 table = wTable | bTable; 
     std::cout << "Tablero Troll" << std::endl;
     for (int i = 0; i < N; i++) {
@@ -142,7 +155,6 @@ void Board::print(){
         }
         std::cout<< "\n"; 
     }
-    std::cout << std::endl;
 }
 
 bool Board::hasWhiteWon(){
