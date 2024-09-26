@@ -2,14 +2,15 @@
 #include <cstdint>
 #include "board.hpp"
 
-
-
 Board::Board(){
 
     board[White] = 0x8181818181818181ULL;
     board[Black] = 0xff000000000000ffULL;
     maskBoard[White] = ~board[White];
     maskBoard[Black] = ~board[Black];
+    fullMask = maskBoard[White] | maskBoard[Black];
+    std::bitset<64> bits(fullMask);
+    std::cout <<  bits << std::endl;
     turn = White;
     oneMask = 1ULL;
     zeroMask = 0ULL;
@@ -75,7 +76,7 @@ bool Board::makeMove(int position){
     else if(isLegalMove(position)){
         board[turn] |= (oneMask << position);
         if( isEating(position)){
-            std::cout<<"Revise"<<std::endl;
+            
         }
         turn = (turn == White) ? Black : White;
         return true;
@@ -182,3 +183,35 @@ bool Board::hasBlackWon(){
 MARK Board::getMark(){
     return turn;
 }
+
+int Board::evaluateBoard(int depth) {
+    int score = 0;
+    MARK currentPlayer = getMark();
+    MARK opponent = (currentPlayer == White) ? Black : White;
+
+    score += __builtin_popcountll(board[currentPlayer]);
+    score -= __builtin_popcountll(board[opponent]);
+
+    //Con un while contando las que estan al lado
+    
+    if (hasWhiteWon()) return (turn == White)? (10-depth): (depth-10);  
+    if (hasBlackWon()) return (turn == Black)? (10-depth): (depth-10);  
+
+    return score;
+}
+
+std::vector<int> Board::generateAllLegalMoves() {
+    std::vector<int> legalMoves;
+
+    for (int position = 0; position < BOARD_SIZE; ++position) {
+        if (isLegalMove(position)) { // Verifica si el movimiento es legal
+            legalMoves.push_back(position); // Agrega a la lista de movimientos legales
+        }
+    }
+    return legalMoves;
+}
+
+bool Board::endGame() {
+    return hasWhiteWon() || hasBlackWon(); // Aquí puedes incluir condiciones de empate si aplica
+}
+

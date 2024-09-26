@@ -2,12 +2,14 @@
 #include <cstdint>
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 #include "game.hpp"
 #include "player.hpp"
 
 Game::Game(){
     board = new Board();
+    //iaPlayer = new Player();
 }
 
 Game::~Game() = default;
@@ -23,14 +25,14 @@ void Game::loopGame(){
     do
     {
         system("clear");
-        setPlayers();
+        setGameMode();
         bool hasonewin = false;
         while (!hasonewin)
         {
+            int move;
             switch (gameMode)
             {
             case PVP:
-                int move;
                 if(board->getMark() == White){
                     std::cout << "Jugador de las blancas haga su movimiento" << std::endl;
                     std::cin >> move;
@@ -39,24 +41,41 @@ void Game::loopGame(){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     std::cin >> move;
                 }   
-                board->makeMove(move);
-                std::cout<<"Pensando"<< std::endl;
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-                
-                //Pregunta Condicion de victoria
-                system("clear");
-                hasonewin = hasOneWin();
-                board->print();
                 break;
             case PVE:
-                hasonewin = true;
+                if(board->getMark() == White){
+                    std::cout << "Jugador de las blancas haga su movimiento" << std::endl;
+                    std::cin >> move;
+                }
+                if(board->getMark() == Black){
+                    std::cout << "Jugador de las negras haga su movimiento" << std::endl;
+                    int bestPosition = -1;
+                    move = iaPlayer.interativeDeepening(*board, 8, bestPosition); 
+                }   
                 break;
             case EVE:
-                hasonewin = true;
+                if(board->getMark() == White){
+                    std::cout << "Juega blanco" << std::endl;
+                    int bestPosition = -1;
+                    move = iaPlayer.negaMax(*board, 0, bestPosition); 
+                }
+                if(board->getMark() == Black){
+                    std::cout << "Juega negro" << std::endl;
+                    int bestPosition = -1;
+                    move = iaPlayer.negaMax(*board, 0, bestPosition); 
+                }   
                 break;
             default:
                 break;
             }
+            board->makeMove(move);
+            std::cout<<"Pensando"<< std::endl;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            
+            //Pregunta Condicion de victoria
+            system("clear");
+            board->print();
+            hasonewin = hasOneWin();
         }
         std::cout<<"Desea salir?" << std::endl;
         std::cout<<"(1) Si" << std::endl;
@@ -64,11 +83,9 @@ void Game::loopGame(){
         std::cin >> exit;
                 
         if(exit == 1){
-            std::cout<< "Saliendo" << std::endl;
             exit = 0;
         }
         else if(exit == 2){
-            std::cout << "Volviendo a jugar" << std::endl;
             newBoard();
             system("clear");
         }
@@ -90,10 +107,10 @@ bool Game::hasOneWin(){
     return false;
 }
 
-void Game::setPlayers(){
+void Game::setGameMode(){
     
     int select = -1;
-    while (select != (1 || 2 || 3))
+    while ((select < 1 || select > 3))
     {
         std::this_thread::sleep_for(std::chrono::seconds(2));
         system("clear");
@@ -107,18 +124,15 @@ void Game::setPlayers(){
         {
         case 1:
             gameMode = PVE;
-            system("clear");
             std::cout<< "PVE" <<std::endl;
             break;
         case 2:
             gameMode = PVP;
-            system("clear");
             std::cout<< "PVP" <<std::endl;
-            select = 1;
             break;
         case 3:
             gameMode = EVE;
-            std::cout<< "En progreso" <<std::endl;
+            std::cout<< "EVE" <<std::endl;
         default:
             std::cout<< "Ingrese una opción válida" <<std::endl;
             break;
@@ -139,8 +153,4 @@ void Game::enterGame(){
 //Salida
 void Game::exitGame(){
     std::cout << "Saliendo de Troll"<< std::endl;
-}
-//Setea el modo de juego
-void Game::setGameMode(GameMode gM){
-    gameMode = gM;
 }

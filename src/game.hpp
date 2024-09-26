@@ -9,10 +9,10 @@ enum GameMode{PVP, PVE, EVE};
 class Game
 {
     Board *board;
-    Player players[2];
+    Player iaPlayer;
     GameMode gameMode;
 
-    void setPlayers();
+    void setGameMode();
 
     public:
         Game();
@@ -22,7 +22,7 @@ class Game
         void enterGame();
         void newBoard();
         bool hasOneWin(); 
-        void setGameMode(GameMode gameMode);
+        
 };
 
 #endif //GAME_HPP

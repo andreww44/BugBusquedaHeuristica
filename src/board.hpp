@@ -3,11 +3,13 @@
 
 #include <cstdint>
 #include <bitset>
+#include <vector>
 
 typedef uint64_t U64;
 enum MARK{White, Black};
 const int N = 8;
 const int BOARD_SIZE = 64;
+
 
 const int DIRECTIONS[8][2] = {
     {1, 0},   // Derecha
@@ -22,11 +24,13 @@ const int DIRECTIONS[8][2] = {
 
 class Board
 {
-    U64 board[2];
-    U64 maskBoard[2];
-    U64 oneMask;
-    U64 zeroMask;
+    U64 board[2]{};
+    U64 maskBoard[2]{};
+    U64 oneMask{};
+    U64 zeroMask{};
     MARK turn;
+
+    U64 fullMask{};
 
     bool isLegalMove(int position); //Verificar si la pos es legal.
     bool isEating(int position);
@@ -43,6 +47,9 @@ class Board
         bool hasWhiteWon(); //Verifica si Blanco ha ganado
         bool hasBlackWon(); //Verifica si Negro ha ganado
         MARK getMark();//Retorna el turno
+        int evaluateBoard(int depth);
+        bool endGame();
+        std::vector<int> generateAllLegalMoves();
 };
 
 #endif //BOARD_HPP
