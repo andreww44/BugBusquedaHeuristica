@@ -3,6 +3,8 @@
 
 #include "player.hpp"
 
+TranspositionTable TT;
+
 Player::Player(){
     
 }
@@ -67,4 +69,52 @@ int Player::interativeDeepening(Board node, int maxDepth, int &bestPosition){
     }
     return value;
     
+}
+
+int Player::alphabetaTT(Board node, int maxDepth, int depth,int alpha, int beta, int &bestPosition){
+
+    TTEntry ttEntry = TT.get(node);
+    if (ttEntry.isValid()){
+        if(ttEntry.getDepth() >= depth) {
+            if (ttEntry.isExact()){
+                return ttEntry.getValue();
+            }
+            if (ttEntry.isLower()) {
+                alpha = std::max(alpha, ttEntry.getValue());
+            } else if (ttEntry.isUpper()){
+                beta = std::min(beta, ttEntry.getValue());
+            }
+            if (alpha >= beta){
+                return ttEntry.getValue();
+            }
+        }
+    }
+
+    if(node.endGame() || depth == maxDepth)
+        return node.evaluateBoard(depth);
+
+    int bestValue= -10000, dummy;  // dummy: variable para descartar las posiciones en las llamadas recursivas
+    int al = alpha;
+    // Iteramos sobre todas las posibles jugadas legales
+    for (int position : node.generateAllLegalMoves()) {
+        Board child(node);
+        child.makeMove(position);
+
+        int value = -alphaBeta(child, maxDepth, depth+1, -beta, -al, dummy);
+        if (value > bestValue) {
+            bestValue = value;
+            bestPosition = position;
+            if (value > al) al = value;
+            if (al >= beta) break;
+        }
+    }
+    bool lower = false, exact = false, upper = false;
+    if (bestValue <= alpha)
+        upper = true;
+    else if (bestValue >= beta)
+        lower = true;
+    else
+        exact = true;
+    TT.store(TTEntry(bestValue, depth, lower, exact, upper, bestPosition), node);
+    return bestValue;
 }

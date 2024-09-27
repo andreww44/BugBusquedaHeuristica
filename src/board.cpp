@@ -9,12 +9,21 @@ Board::Board(){
     maskBoard[White] = ~board[White];
     maskBoard[Black] = ~board[Black];
     fullMask = maskBoard[White] | maskBoard[Black];
-    std::bitset<64> bits(fullMask);
-    std::cout <<  bits << std::endl;
+    
     turn = White;
     oneMask = 1ULL;
     zeroMask = 0ULL;
+
+    winingBoard[Black] = 0x00FF000000000000ULL;
+    winingBoard[White] = 0x4040404040404040ULL;
+    std::bitset<64> bits(winingBoard[White]);
+    std::cout <<  bits << std::endl;
 }
+
+U64 Board::getBlackBoard() const { return board[Black]; }
+U64 Board::getWhiteBoard() const { return board[White]; }
+
+MARK Board::getActiveTurn() const { return turn; }
 
 Board::~Board() = default;
 
@@ -193,9 +202,107 @@ int Board::evaluateBoard(int depth) {
     score -= __builtin_popcountll(board[opponent]);
 
     //Con un while contando las que estan al lado
+
+    int fevaluate_1[9] = { 1, 2, 1,
+                           3, 0, 3,
+                           1, 2, 1 };
+
+    int pos = 0;
+
+    if(currentPlayer == Black){
+        for (int i = 0; i < 6; i++)
+        {
+            if(board[currentPlayer] & maskBoard[currentPlayer] & (winingBoard[currentPlayer] << 8*i)){
+                score +=10000;
+            }
+        } 
+    }
+    else{
+        
+        for (int i = 0; i < 6; i++)
+        {
+            if(board[currentPlayer] & maskBoard[currentPlayer] & (winingBoard[currentPlayer] << i)){
+                score +=10000;
+            }
+        } 
     
-    if (hasWhiteWon()) return (turn == White)? (10-depth): (depth-10);  
-    if (hasBlackWon()) return (turn == Black)? (10-depth): (depth-10);  
+    }
+
+    for(int i = 0; i < BOARD_SIZE; i++){
+        int x = pos%N;
+        int y = pos/N;
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+1)){
+            if(currentPlayer == Black){
+                score+=10;
+            }
+            else{
+                score+=6;
+            }
+        }
+        else{
+            score -=100;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-1)){
+            if(currentPlayer == Black){
+                score+=10;
+            }
+            else{
+                score+=6;
+            }
+        }
+        else{
+            score -=100;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-8)){
+            if(currentPlayer == Black){
+                score+=6;
+            }
+            else{
+                score+=10;
+            }
+        }
+        else{
+            score -=100;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+8)){
+            if(currentPlayer == Black){
+                score+=6;
+            }
+            else{
+                score+=10;
+            }
+        }
+        else{
+            score -=100;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-9)){
+            score+=2;
+        }
+        else{
+            score -=50;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-7)){
+            score+=2;
+        }
+        else{
+            score -=50;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+9)){
+            score+=2;
+        }
+        else{
+            score -=50;
+        }
+        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+7)){
+            score+=2;
+        }
+        else{
+            score -=50;
+        }
+    }
+    
+    if (hasWhiteWon()) return (turn == White)? 10000 : -10000;  
+    if (hasBlackWon()) return (turn == Black)?  10000 : -10000;  
 
     return score;
 }

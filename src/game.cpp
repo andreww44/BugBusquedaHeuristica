@@ -50,7 +50,8 @@ void Game::loopGame(){
                 if(board->getMark() == Black){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     int bestPosition = -1;
-                    move = iaPlayer.interativeDeepening(*board, 8, bestPosition); 
+                    //move = iaPlayer.interativeDeepening(*board, 8, bestPosition); 
+                    move = iaPlayer.alphabetaTT(*board, 2, 0, -10000000, 10000000,bestPosition);
                 }   
                 break;
             case EVE:
