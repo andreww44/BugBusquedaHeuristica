@@ -45,10 +45,12 @@ class Board
     public:
         Board(); //Constructor prototipe
         ~Board(); //Destructor prototipo
+        Board(uint16_t white, uint16_t black, MARK turn);
         bool makeMove(int position); // Permite mover
         void print(); // Imprime el tablero
         bool hasWhiteWon(); //Verifica si Blanco ha ganado
         bool hasBlackWon(); //Verifica si Negro ha ganado
+        bool isFull();
         
         MARK getMark();//Retorna el turno
         MARK getActiveTurn() const;
@@ -58,7 +60,8 @@ class Board
         int evaluateBoard(int depth);
         bool endGame();
         std::vector<int> generateAllLegalMoves();
-        
+        void undoMove(int pos);
+
         bool operator==(const Board &other) const {
             return turn==other.turn && board[Black]==other.board[Black] && board[White]==other.board[White];
         }

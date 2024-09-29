@@ -1,13 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader"><![CDATA[{
+  "useNewFormat": true
+}]]></component>
+  <component name="CMakeProjectFlavorService">
+    <option name="flavorId" value="CMakePlainProjectFlavor" />
+  </component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="troll" targetName="troll" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="9cac2181-6e80-40a1-8005-4d6c3aeb5f48" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/BugBusquedaHeuristica.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BugBusquedaHeuristica.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BugPrograma/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/BugPrograma/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BugPrograma/bug" beforeDir="false" afterPath="$PROJECT_DIR$/BugPrograma/bug" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BugPrograma/mainbug.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/BugPrograma/mainbug.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/tasks.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/tasks.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Links.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Links.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Problemas/Calculando coordenadas de tablero.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Problemas/Calculando coordenadas de tablero.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TTEntry.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/TTEntry.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/board.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/board.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/board.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/board.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/game.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/game.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/game.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/player.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/player.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/player.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/troll" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,12 +55,13 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 3
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
   <component name="ProjectId" id="2lL3lfUH1n23fEPMhgQBCgJRffd" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -37,10 +76,23 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/monsa/OneDrive/Documentos/GitHub/TrollGameHeuristica/CMakeLists.txt",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="troll" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="troll" TARGET_NAME="troll" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="troll" RUN_TARGET_NAME="troll">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -50,6 +102,7 @@
       <option name="presentableId" value="Default" />
       <updated>1724945682702</updated>
       <workItem from="1724945684016" duration="77000" />
+      <workItem from="1727470802335" duration="67000" />
     </task>
     <servers />
   </component>

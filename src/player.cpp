@@ -13,19 +13,17 @@ Player::~Player() = default;
 
 int Player::negaMax(Board node, int depth, int &bestPosition) {
     int maxDepth = 9;
-    node.print();
     if (node.endGame() || depth == maxDepth) {
         
         return node.evaluateBoard(depth);
     }
+    node.print();
+    int bestValue = -10000, dummy; 
 
-    int bestValue = -10000, dummy;  // Variable para el valor de posición en las llamadas recursivas
-
-    // Itera sobre todas las posibles jugadas legales
     for (int position : node.generateAllLegalMoves()) {
         Board child(node);  // Crea una copia del tablero actual
         if(child.makeMove(position)){
-            // Llama recursivamente a negamax
+        
             int value = -negaMax(child, depth + 1, dummy);
             if (value > bestValue) {
                 bestValue = value;
@@ -46,10 +44,11 @@ int Player::alphaBeta(Board node, int maxDepth, int depth, int alpha, int beta, 
     int bestValue = -10000, dummy; 
 
     for (int position : node.generateAllLegalMoves()) {
-        Board child(node);  // Crea una copia del tablero actual
+        Board child(node.getWhiteBoard(), node.getBlackBoard(), node.getActiveTurn());  // Crea una copia del tablero actual
         if(child.makeMove(position)){
-            // Llama recursivamente a negamax
+            
             int value = -alphaBeta(child, maxDepth, depth+1, -beta, -alpha ,dummy);
+            child.undoMove(position);
             if (value > bestValue) {
                 bestValue = value;
                 bestPosition = position;

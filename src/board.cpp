@@ -6,6 +6,8 @@ Board::Board(){
 
     board[White] = 0x8181818181818181ULL;
     board[Black] = 0xff000000000000ffULL;
+    //board[Black] = 0xfffe0800000000ffULL;
+
     maskBoard[White] = ~board[White];
     maskBoard[Black] = ~board[Black];
     fullMask = maskBoard[White] | maskBoard[Black];
@@ -16,9 +18,11 @@ Board::Board(){
 
     winingBoard[Black] = 0x00FF000000000000ULL;
     winingBoard[White] = 0x4040404040404040ULL;
-    std::bitset<64> bits(winingBoard[White]);
+    std::bitset<64> bits(winingBoard[Black]);
     std::cout <<  bits << std::endl;
 }
+
+Board::Board(const uint16_t white, const uint16_t black, const MARK turn): board{white, black}, turn(turn) {}
 
 U64 Board::getBlackBoard() const { return board[Black]; }
 U64 Board::getWhiteBoard() const { return board[White]; }
@@ -47,6 +51,7 @@ bool Board::isEating(int position){
 }
 
 bool Board::eat(int position, int direction){
+    
     int y = position / N;
     int x = position % N;
     int dy = DIRECTIONS[direction][0];
@@ -84,71 +89,82 @@ bool Board::makeMove(int position){
     }
     else if(isLegalMove(position)){
         board[turn] |= (oneMask << position);
-        if( isEating(position)){
-            
-        }
+        isEating(position);
         turn = (turn == White) ? Black : White;
         return true;
     }
     return false;
 }
 
-bool Board::isValidInLimits(int x, int y){
-    return x >= 0 && x < N && y >=0 && y < N;
+bool Board::hasWhiteWon(){
+    
+    U64 map = board[White] & maskBoard[White];  // Mapa de las piezas blancas en el tablero
+    U64 visit = zeroMask;  // Piezas que ya han sido "visitadas"
+    
+    U64 currentMask = (map & 0xFF00000000000000ULL);  // Piezas en la fila superior (lado inicial del blanco)
+    
+    while (currentMask != 0) {
+        visit |= currentMask;  // Marcamos las piezas actuales como visitadas
+
+        // Expansión en 4 direcciones posibles: derecha, izquierda, abajo y arriba
+        U64 rightShift = (currentMask >> 1) & 0x7F7F7F7F7F7F7F7FULL;  // Desplazar hacia la derecha
+        U64 leftShift = (currentMask << 1) & 0xFEFEFEFEFEFEFEFEULL;   // Desplazar hacia la izquierda
+        U64 downShift = (currentMask >> 8);  // Desplazar hacia abajo
+        U64 upShift = (currentMask << 8);    // Desplazar hacia arriba
+
+        // Unimos todos los desplazamientos
+        currentMask = (rightShift | leftShift | downShift | upShift) & map;
+
+        // Verificamos si alguna pieza toca la fila inferior (meta del blanco)
+        if (currentMask & 0x00000000000000FFULL) {
+            return true;  // Victoria blanca
+        }
+
+        // Eliminamos las piezas ya visitadas para evitar bucles
+        currentMask &= ~visit;
+    }
+
+    return false;  // No hay camino completo
+
 }
 
-bool Board::existsWayDfs(MARK color, U64 map, U64& visit, int x, int y, int pf){
-    //std::cout<< "DFS" << std::endl;
-    if(!isValidInLimits(x, y)){
-        return false;
-    }
+bool Board::isFull(){
+    U64 FB = (board[White] & maskBoard[White]) & (board[Black] & maskBoard[Black]);
+    U64 MB = maskBoard[Black] & maskBoard[White];
+    return (MB == FB);
+}
 
-    int position = x*N + y;
-
-    if((visit & (oneMask << position )) || !(map &(oneMask << position))){
-        return false;
-    }
-
-    visit |= (oneMask << position);
-
-    if(color == White){
-        if(x == pf){
-            return true;
-        }
-    }
-    if(color == Black){
-        if(y == pf){
-            return true;
-        }
-    }
+bool Board::hasBlackWon(){
     
-    // Revisa Derecha
-    if(y + 1 < N && existsWayDfs(color, map, visit, x, y+1, pf)){
-        return true;
+    U64 map = board[Black] & maskBoard[Black];
+    
+    U64 currentMask = (board[Black] & 0x0101010101010101ULL);  // Primera columna
+    U64 visit = 0ULL;
+
+    // Mientras haya piezas por expandir
+    while (currentMask) {
+        // Añadimos las piezas actuales a la lista de visitados
+        visit |= currentMask;
+
+        if (currentMask & 0x8080808080808080ULL) {  
+            return true;  // Victoria
+        }
+        U64 rightShiftMask = (currentMask >> 1) & 0x7F7F7F7F7F7F7F7FULL; 
+        U64 leftShiftMask = (currentMask << 1) & 0xFEFEFEFEFEFEFEFEULL;  
+        U64 upShiftMask = (currentMask >> N);
+        U64 downShiftMask = (currentMask << N);
+
+        currentMask = (rightShiftMask | leftShiftMask | upShiftMask | downShiftMask) & map;
+        currentMask &= ~visit;
     }
 
-    // Revisa Arriba
-    if(x-1 >= 0 && existsWayDfs(color, map, visit, x-1, y, pf)){
-        return true;
-    }
+    return false; 
 
-    // Revisa hacia abajo
-    if(x + 1 < N && existsWayDfs(color, map, visit, x + 1, y, pf)){
-        return true;
-    }
-
-    //Revisa Izquierda
-
-    if(y - 1 >= 0 && existsWayDfs(color, map, visit, x, y-1, pf)){
-        return true;
-    }        
-    return false;
 }
 
 void Board::print(){
     U64 wTable = board[White] & maskBoard[White];
     U64 bTable = board[Black] & maskBoard[Black];
-
     //U64 table = wTable | bTable; 
     std::cout << "Tablero Troll" << std::endl;
     for (int i = 0; i < N; i++) {
@@ -167,143 +183,39 @@ void Board::print(){
     }
 }
 
-bool Board::hasWhiteWon(){
-    U64 map = board[White] & maskBoard[White];
-    U64 visit = zeroMask;
-    for(int i = 0; i < N; i++){
-        if(existsWayDfs(White, map, visit, 0,i,7)){
-            return true;
-        }
-    }
-    return false;
-}
-
-bool Board::hasBlackWon(){
-    U64 map = board[Black] & maskBoard[Black];
-    U64 visit = zeroMask;
-    for(int i = 0; i < N; i++){
-        if(existsWayDfs(Black, map, visit, i,0,7)){
-            return true;
-        }
-    }
-    return false; 
-}
-
 MARK Board::getMark(){
     return turn;
 }
 
 int Board::evaluateBoard(int depth) {
+    
     int score = 0;
-    MARK currentPlayer = getMark();
-    MARK opponent = (currentPlayer == White) ? Black : White;
 
-    score += __builtin_popcountll(board[currentPlayer]);
-    score -= __builtin_popcountll(board[opponent]);
+    MARK currentTurn = getMark();
 
-    //Con un while contando las que estan al lado
+    if (hasWhiteWon())
+        return (turn == White) ? (10 - depth) : (depth - 10);  // Si 'X' ha ganado, es bueno para el maximizador (X)
+    if (hasBlackWon())
+        return (turn == Black) ? (10 - depth) : (depth - 10); // Si 'O' ha ganado, es bueno para el minimizador (O)
+    if (isFull())
+        return 0;  // Empate
 
-    int fevaluate_1[9] = { 1, 2, 1,
-                           3, 0, 3,
-                           1, 2, 1 };
-
-    int pos = 0;
-
-    if(currentPlayer == Black){
-        for (int i = 0; i < 6; i++)
-        {
-            if(board[currentPlayer] & maskBoard[currentPlayer] & (winingBoard[currentPlayer] << 8*i)){
-                score +=10000;
-            }
-        } 
+    if ((maskBoard[currentTurn] & maskBoard[!currentTurn]) == board[currentTurn])
+    {
+        return 0;
+    }
+    
+    // Evaluar el número de piezas
+    int whitePieces = __builtin_popcountll(board[White]);
+    int blackPieces = __builtin_popcountll(board[Black]);
+    
+    if(turn == Black){
+        score -= (whitePieces - blackPieces)*2;
     }
     else{
-        
-        for (int i = 0; i < 6; i++)
-        {
-            if(board[currentPlayer] & maskBoard[currentPlayer] & (winingBoard[currentPlayer] << i)){
-                score +=10000;
-            }
-        } 
-    
-    }
-
-    for(int i = 0; i < BOARD_SIZE; i++){
-        int x = pos%N;
-        int y = pos/N;
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+1)){
-            if(currentPlayer == Black){
-                score+=10;
-            }
-            else{
-                score+=6;
-            }
-        }
-        else{
-            score -=100;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-1)){
-            if(currentPlayer == Black){
-                score+=10;
-            }
-            else{
-                score+=6;
-            }
-        }
-        else{
-            score -=100;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-8)){
-            if(currentPlayer == Black){
-                score+=6;
-            }
-            else{
-                score+=10;
-            }
-        }
-        else{
-            score -=100;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+8)){
-            if(currentPlayer == Black){
-                score+=6;
-            }
-            else{
-                score+=10;
-            }
-        }
-        else{
-            score -=100;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-9)){
-            score+=2;
-        }
-        else{
-            score -=50;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos-7)){
-            score+=2;
-        }
-        else{
-            score -=50;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+9)){
-            score+=2;
-        }
-        else{
-            score -=50;
-        }
-        if(board[currentPlayer] & maskBoard[currentPlayer] & (oneMask << pos+7)){
-            score+=2;
-        }
-        else{
-            score -=50;
-        }
+        score += (whitePieces - blackPieces)*2;
     }
     
-    if (hasWhiteWon()) return (turn == White)? 10000 : -10000;  
-    if (hasBlackWon()) return (turn == Black)?  10000 : -10000;  
-
     return score;
 }
 
@@ -311,14 +223,19 @@ std::vector<int> Board::generateAllLegalMoves() {
     std::vector<int> legalMoves;
 
     for (int position = 0; position < BOARD_SIZE; ++position) {
-        if (isLegalMove(position)) { // Verifica si el movimiento es legal
-            legalMoves.push_back(position); // Agrega a la lista de movimientos legales
+        if (isLegalMove(position)) { 
+            legalMoves.push_back(position); 
         }
     }
     return legalMoves;
 }
 
+//Correcto
 bool Board::endGame() {
-    return hasWhiteWon() || hasBlackWon(); // Aquí puedes incluir condiciones de empate si aplica
+    return  hasWhiteWon() || hasBlackWon();
 }
 
+void Board::undoMove(int pos){
+    board[turn] &= ~(oneMask << pos);
+    turn = (turn == White) ? Black: White;
+}

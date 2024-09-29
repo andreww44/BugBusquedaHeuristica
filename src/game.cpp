@@ -30,6 +30,7 @@ void Game::loopGame(){
         while (!hasonewin)
         {
             int move;
+            int abvalue;
             switch (gameMode)
             {
             case PVP:
@@ -51,7 +52,8 @@ void Game::loopGame(){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     int bestPosition = -1;
                     //move = iaPlayer.interativeDeepening(*board, 8, bestPosition); 
-                    move = iaPlayer.alphabetaTT(*board, 2, 0, -10000000, 10000000,bestPosition);
+                    abvalue = iaPlayer.alphabetaTT(*board, 3, 0, -10000000, 10000000, bestPosition);
+                    move = bestPosition;
                 }   
                 break;
             case EVE:
@@ -75,6 +77,7 @@ void Game::loopGame(){
             
             //Pregunta Condicion de victoria
             system("clear");
+            std::cout << abvalue << std::endl;
             board->print();
             hasonewin = hasOneWin();
         }

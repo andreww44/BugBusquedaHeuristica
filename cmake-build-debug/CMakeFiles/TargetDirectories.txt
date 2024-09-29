@@ -1,0 +1,3 @@
+C:/Users/monsa/OneDrive/Documentos/GitHub/TrollGameHeuristica/cmake-build-debug/CMakeFiles/troll.dir
+C:/Users/monsa/OneDrive/Documentos/GitHub/TrollGameHeuristica/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/monsa/OneDrive/Documentos/GitHub/TrollGameHeuristica/cmake-build-debug/CMakeFiles/rebuild_cache.dir
