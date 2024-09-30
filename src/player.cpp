@@ -9,19 +9,40 @@ Player::Player(){
     
 }
 
+
+
 Player::~Player() = default;
 
+
+void Player::reset(){
+    maxdepth = 0;
+    nodesvistit = 0;
+    iterac = 0;
+}
+
+int Player:: getNV(){
+    return nodesvistit;
+}
+int Player:: getMD(){
+    return maxdepth;
+}
+int Player:: getIT(){
+    return iterac;
+}
+int Player:: getScore(){
+    return puntaje;
+}
 int Player::negaMax(Board node, int depth, int &bestPosition) {
     int maxDepth = 9;
+    maxdepth = depth;
+    nodesvistit++;
     if (node.endGame() || depth == maxDepth) {
-        
         return node.evaluateBoard(depth);
     }
-    node.print();
     int bestValue = -10000, dummy; 
 
     for (int position : node.generateAllLegalMoves()) {
-        Board child(node);  // Crea una copia del tablero actual
+        Board child(node.getWhiteBoard(), node.getBlackBoard(), node.getActiveTurn());
         if(child.makeMove(position)){
         
             int value = -negaMax(child, depth + 1, dummy);
@@ -31,12 +52,53 @@ int Player::negaMax(Board node, int depth, int &bestPosition) {
             }
         }  // Realiza la jugada   
     }
+    puntaje+= bestValue;
     return bestValue;  // Devuelve el mejor valor encontrado
 }
 
+int Player::negaScout(Board node, int depth, int &bestPosition, int alpha, int beta) {
+    int maxDepth = 9;
+    maxdepth = depth;
+    nodesvistit++;
+    if (node.endGame() || depth == maxDepth) {
+        return node.evaluateBoard(depth);
+    }
+
+    int bestValue = -10000, dummy;
+    bool firstChild = true;
+
+    for (int position : node.generateAllLegalMoves()) {
+        Board child(node.getWhiteBoard(), node.getBlackBoard(), node.getActiveTurn());
+        if (child.makeMove(position)) {
+            
+            int score;
+            if (firstChild) {
+                score = -negaScout(child, depth + 1, dummy, -beta, -alpha);
+                firstChild = false;
+            } else {
+                score = -negaScout(child, depth + 1, dummy, -alpha - 1, -alpha);
+                if (alpha < score && score < beta) {
+                    score = -negaScout(child, depth + 1, dummy, -beta, -alpha);
+                }
+            }
+
+            if (score > bestValue) {
+                bestValue = score;
+                bestPosition = position;
+            }
+            alpha = std::max(alpha, bestValue);
+            if (alpha >= beta) {
+                break; 
+            }
+        }
+    }
+    puntaje+= bestValue;
+    return bestValue;
+}
+
 int Player::alphaBeta(Board node, int maxDepth, int depth, int alpha, int beta, int &bestPosition){
-    
-    node.print();
+    maxdepth = depth;
+    nodesvistit++;
     if (node.endGame() || depth == maxDepth) {
         return node.evaluateBoard(depth);
     }
@@ -55,8 +117,9 @@ int Player::alphaBeta(Board node, int maxDepth, int depth, int alpha, int beta, 
                 if(value > alpha) alpha = value;
                 if(alpha >= beta)break;
             }
-        }  // Realiza la jugada   
+        }   
     }
+    puntaje+= bestValue;
     return bestValue;
 }
 
@@ -64,10 +127,11 @@ int Player::interativeDeepening(Board node, int maxDepth, int &bestPosition){
     int value;
     for (int depth = 0; depth < maxDepth; depth++)
     {
+        iterac++;
         value = alphaBeta(node, depth, 0, -10000000, 10000000, bestPosition);
     }
-    return value;
-    
+    puntaje+= value;
+    return value; 
 }
 
 int Player::alphabetaTT(Board node, int maxDepth, int depth,int alpha, int beta, int &bestPosition){
@@ -115,5 +179,34 @@ int Player::alphabetaTT(Board node, int maxDepth, int depth,int alpha, int beta,
     else
         exact = true;
     TT.store(TTEntry(bestValue, depth, lower, exact, upper, bestPosition), node);
+    puntaje+= bestValue;
     return bestValue;
+}
+
+int Player::MTDf(Board node, int f, int maxDepth, int &bestPosition) {
+    
+    int upperBound = 10000000;  
+    int lowerBound = -10000000;  
+    
+    while (lowerBound < upperBound) {
+        iterac++;
+        int beta = max(f, lowerBound+1);  
+        f = alphabetaTT(node, maxDepth, 0, beta - 1, beta, bestPosition);  
+        
+        if (f < beta) {
+            upperBound = f;  
+        } else {
+            lowerBound = f; 
+        }
+    }
+    puntaje+= f;
+    return f;
+}
+
+int Player::max(int f, int lw){
+    if (f > lw)
+        return f;
+    if(lw > f)
+        return lw;
+    return lw;
 }

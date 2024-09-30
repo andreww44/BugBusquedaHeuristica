@@ -30,7 +30,9 @@ void Game::loopGame(){
         while (!hasonewin)
         {
             int move;
-            int abvalue;
+            int abvalue = 0;
+            std::chrono::duration<double> duration;
+
             switch (gameMode)
             {
             case PVP:
@@ -51,9 +53,11 @@ void Game::loopGame(){
                 if(board->getMark() == Black){
                     std::cout << "Jugador de las negras haga su movimiento" << std::endl;
                     int bestPosition = -1;
-                    //move = iaPlayer.interativeDeepening(*board, 8, bestPosition); 
-                    abvalue = iaPlayer.alphabetaTT(*board, 3, 0, -10000000, 10000000, bestPosition);
+                    auto start = std::chrono::high_resolution_clock::now();
+                    abvalue = iaPlayer.negaScout(*board, 8, bestPosition, -10000000, 10000000);
                     move = bestPosition;
+                    auto end = std::chrono::high_resolution_clock::now();
+                    duration = end -start;
                 }   
                 break;
             case EVE:
@@ -65,7 +69,7 @@ void Game::loopGame(){
                 if(board->getMark() == Black){
                     std::cout << "Juega negro" << std::endl;
                     int bestPosition = -1;
-                    move = iaPlayer.negaMax(*board, 0, bestPosition); 
+                    move = iaPlayer.negaMax(*board, 0, bestPosition);
                 }   
                 break;
             default:
@@ -74,10 +78,19 @@ void Game::loopGame(){
             board->makeMove(move);
             std::cout<<"Pensando"<< std::endl;
             std::this_thread::sleep_for(std::chrono::seconds(1));
+
             
+            
+
             //Pregunta Condicion de victoria
             system("clear");
-            std::cout << abvalue << std::endl;
+            
+            std::cout << "Tiempo de ejecución: " << duration.count() << " segundos" << std::endl;
+            std::cout << "Puntaje Maximo: "<< iaPlayer.getScore() << std::endl;
+            std::cout << "MD: "<< iaPlayer.getMD() << std::endl;
+            std::cout << "Nodos Visitados: "<< iaPlayer.getNV() << std::endl;
+            std::cout << "Iteraciones: "<< iaPlayer.getIT() << std::endl;
+            iaPlayer.reset();
             board->print();
             hasonewin = hasOneWin();
         }

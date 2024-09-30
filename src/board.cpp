@@ -98,29 +98,26 @@ bool Board::makeMove(int position){
 
 bool Board::hasWhiteWon(){
     
-    U64 map = board[White] & maskBoard[White];  // Mapa de las piezas blancas en el tablero
-    U64 visit = zeroMask;  // Piezas que ya han sido "visitadas"
+    U64 map = board[White] & maskBoard[White];  
+    U64 visit = zeroMask;  
     
-    U64 currentMask = (map & 0xFF00000000000000ULL);  // Piezas en la fila superior (lado inicial del blanco)
+    U64 currentMask = (map & 0xFF00000000000000ULL);  
     
     while (currentMask != 0) {
-        visit |= currentMask;  // Marcamos las piezas actuales como visitadas
+        visit |= currentMask;  
 
-        // Expansión en 4 direcciones posibles: derecha, izquierda, abajo y arriba
-        U64 rightShift = (currentMask >> 1) & 0x7F7F7F7F7F7F7F7FULL;  // Desplazar hacia la derecha
-        U64 leftShift = (currentMask << 1) & 0xFEFEFEFEFEFEFEFEULL;   // Desplazar hacia la izquierda
-        U64 downShift = (currentMask >> 8);  // Desplazar hacia abajo
-        U64 upShift = (currentMask << 8);    // Desplazar hacia arriba
+        U64 rightShift = (currentMask >> 1) & 0x7F7F7F7F7F7F7F7FULL;  
+        U64 leftShift = (currentMask << 1) & 0xFEFEFEFEFEFEFEFEULL;   
+        U64 downShift = (currentMask >> 8);  
+        U64 upShift = (currentMask << 8);    
 
         // Unimos todos los desplazamientos
         currentMask = (rightShift | leftShift | downShift | upShift) & map;
 
-        // Verificamos si alguna pieza toca la fila inferior (meta del blanco)
         if (currentMask & 0x00000000000000FFULL) {
             return true;  // Victoria blanca
         }
 
-        // Eliminamos las piezas ya visitadas para evitar bucles
         currentMask &= ~visit;
     }
 
@@ -193,18 +190,24 @@ int Board::evaluateBoard(int depth) {
 
     MARK currentTurn = getMark();
 
-    if (hasWhiteWon())
-        return (turn == White) ? (10 - depth) : (depth - 10);  // Si 'X' ha ganado, es bueno para el maximizador (X)
-    if (hasBlackWon())
-        return (turn == Black) ? (10 - depth) : (depth - 10); // Si 'O' ha ganado, es bueno para el minimizador (O)
-    if (isFull())
-        return 0;  // Empate
-
-    if ((maskBoard[currentTurn] & maskBoard[!currentTurn]) == board[currentTurn])
-    {
-        return 0;
+    if (hasWhiteWon()){
+        if(turn == White){
+            if(depth != 0){ return 10000/depth;}
+            else{return 10000;}
+        }
+        else{return -2000*depth;}
     }
-    
+    if (hasBlackWon()){
+        if(turn == Black){
+            if(depth != 0){ return 10000/depth;}
+            else{ return 10000; }
+        } else{ return -2000*depth;}
+    }
+    if (isFull())
+        return 0;
+    if ((maskBoard[currentTurn] & maskBoard[!currentTurn]) == board[currentTurn])
+        return 0;
+
     // Evaluar el número de piezas
     int whitePieces = __builtin_popcountll(board[White]);
     int blackPieces = __builtin_popcountll(board[Black]);
